@@ -21,6 +21,13 @@
         h1 {
             text-align: center;
         }
+        h4 {
+       position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+      color: #ff0026;
+    }
         input[type="text"] {
             width: 98%;
             padding: 10px;
@@ -41,6 +48,25 @@
             margin-right: 15px;
             border-radius: 5px;
         }
+        .back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
         .ant-info {
             flex-grow: 1;
         }
@@ -421,6 +447,6 @@
             }
         });
     </script>
-    <a href="index.html"><h2><mark><b> Trang Chủ </b></mark></h2></a>
+    <a href="index.html" class="back-button">⬅ Về trang chính</a>
 </body>
 </html>

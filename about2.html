@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trang Góp Ý & Bình Luận</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 0.5s ease;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 100px auto;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    a {
+       position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+    }
+    h2 {
+        text-align: center;}
+    h4 {
+      text-align: right;
+    color: #ff0000;  /* Chuyển màu khi hover */
+    transform: scale(1.1);  /* Phóng to khi hover */
+    transition: all 0.3s ease;  /* Hiệu ứng chuyển động */
+    
+
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      resize: vertical;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #218838;
+    }
+    .back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
+    .comments {
+      margin-top: 30px;
+    }
+
+    .comment {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    /* Media Query for mobile devices */
+    @media (max-width: 768px) {
+      .container {
+        margin: 50px auto;
+        padding: 15px;
+      }
+
+      textarea {
+        font-size: 14px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+
+      .comment {
+        font-size: 14px;
+      }
+    }
+
+    /* Media Query for large devices (desktops or tablets in landscape mode) */
+    @media (min-width: 769px) {
+      .container {
+        margin: 100px auto;
+        padding: 20px;
+      }
+
+      textarea {
+        font-size: 16px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+
+      .comment {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">⬅ Về trang chính</a>
+
+  <div class="container">
+    <h2>💬 Góp ý & Bình Luận</h2>
+    <textarea id="commentInput" placeholder="Nhập ý kiến hoặc bình luận của bạn tại đây..."></textarea><br>
+    <button onclick="submitComment()">Gửi bình luận</button>
+
+    <div class="comments" id="commentsList">
+      <!-- Các bình luận sẽ hiện ra ở đây -->
+    </div>
+  </div>
+
+  <script>
+    // Mảng chứa các hình nền có sẵn
+    const backgrounds = [
+      'https://tecwood.com.vn/upload/images/Post/hinh-nen-cay-xanh.jpg',
+      'https://png.pngtree.com/background/20230410/original/pngtree-plant-leaves-tropical-nature-background-picture-image_2383527.jpg',
+      'https://png.pngtree.com/thumb_back/fw800/background/20240715/pngtree-water-dripping-from-leaves-image_15873743.jpg',
+      'https://png.pngtree.com/thumb_back/fw800/background/20241030/pngtree-a-group-of-green-leaves-vibrant-in-natural-light-image_16469467.jpg',
+    ];
+
+    let currentBg = 0;
+
+    // Hàm thay đổi nền ngẫu nhiên mỗi khi trang được tải lại
+    function changeBackground() {
+      currentBg = (currentBg + 1) % backgrounds.length;
+      document.body.style.backgroundImage = `url('${backgrounds[currentBg]}')`;
+    }
+
+    // Thay đổi nền mỗi 2 giây
+    setInterval(changeBackground, 2000);
+
+    // Kiểm tra và reset các bình luận sau 2 giờ
+    function resetCommentsAfter2Hours() {
+      const lastVisit = localStorage.getItem("lastVisit");
+      const now = new Date().getTime();
+      
+      // Kiểm tra nếu đã quá 2 giờ kể từ lần truy cập cuối
+      if (lastVisit && (now - lastVisit > 2 * 60 * 60 * 1000)) {
+        localStorage.removeItem("comments");
+      }
+
+      // Cập nhật thời gian truy cập
+      localStorage.setItem("lastVisit", now);
+    }
+
+    // Hàm gửi bình luận
+    function submitComment() {
+      const input = document.getElementById("commentInput");
+      const text = input.value.trim();
+      if (text !== "") {
+        const commentDiv = document.createElement("div");
+        commentDiv.className = "comment";
+        commentDiv.innerHTML = text;
+        
+        // Lưu bình luận vào localStorage
+        let comments = JSON.parse(localStorage.getItem("comments")) || [];
+        comments.push(text);
+        localStorage.setItem("comments", JSON.stringify(comments));
+
+        // Hiển thị bình luận mới
+        document.getElementById("commentsList").prepend(commentDiv);
+        input.value = "";
+      }
+    }
+
+    // Hiển thị các bình luận đã lưu từ localStorage
+    function displayComments() {
+      const comments = JSON.parse(localStorage.getItem("comments")) || [];
+      comments.forEach(comment => {
+        const commentDiv = document.createElement("div");
+        commentDiv.className = "comment";
+        commentDiv.innerHTML = comment;
+        document.getElementById("commentsList").appendChild(commentDiv);
+      });
+    }
+
+    // Gọi resetCommentsAfter2Hours để kiểm tra và xóa bình luận cũ nếu quá 2 giờ
+    resetCommentsAfter2Hours();
+
+    // Hiển thị bình luận nếu có
+    displayComments();
+
+    // Lần đầu khi trang được tải
+    changeBackground();
+  </script>
+</body>
+</html>
